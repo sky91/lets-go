@@ -52,6 +52,22 @@ func (thisP *ErrClosers) Close() error {
 	return errors.Join(errs...)
 }
 
+func (thisP *ErrClosers) CloseOnError(err *error) error {
+	if err == nil || *err == nil {
+		return nil
+	}
+	return thisP.Close()
+}
+
+func (thisP *ErrClosers) CloseAppendOnError(err *error) {
+	if err == nil || *err == nil {
+		return
+	}
+	if closeErr := thisP.Close(); closeErr != nil {
+		*err = errors.Join(*err, closeErr)
+	}
+}
+
 type Input1ErrClosers[T any] []func(T) error
 
 func (thisP *Input1ErrClosers[T]) Defer(f func(T)) {
@@ -71,6 +87,22 @@ func (thisP *Input1ErrClosers[T]) Close(t T) error {
 	}
 	*thisP = nil
 	return errors.Join(errs...)
+}
+
+func (thisP *Input1ErrClosers[T]) CloseOnError(t T, err *error) error {
+	if err == nil || *err == nil {
+		return nil
+	}
+	return thisP.Close(t)
+}
+
+func (thisP *Input1ErrClosers[T]) CloseAppendOnError(t T, err *error) {
+	if err == nil || *err == nil {
+		return
+	}
+	if closeErr := thisP.Close(t); closeErr != nil {
+		*err = errors.Join(*err, closeErr)
+	}
 }
 
 type CtxClosers Input1Closers[context.Context]
