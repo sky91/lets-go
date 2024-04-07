@@ -7,8 +7,8 @@ type FnShutdown[T any] struct {
 	ShutdownFn func()
 }
 
-func (thisP *FnShutdown[T]) Get() T { return thisP.Value }
-
+func (thisP *FnShutdown[T]) Val() T    { return thisP.Value }
+func (thisP *FnShutdown[T]) Ptr() *T   { return &thisP.Value }
 func (thisP *FnShutdown[T]) Shutdown() { thisP.ShutdownFn() }
 
 type ErrFnShutdown[T any] struct {
@@ -16,8 +16,8 @@ type ErrFnShutdown[T any] struct {
 	ShutdownFn func() error
 }
 
-func (thisP *ErrFnShutdown[T]) Get() T { return thisP.Value }
-
+func (thisP *ErrFnShutdown[T]) Val() T          { return thisP.Value }
+func (thisP *ErrFnShutdown[T]) Ptr() *T         { return &thisP.Value }
 func (thisP *ErrFnShutdown[T]) Shutdown() error { return thisP.ShutdownFn() }
 
 type CtxFnShutdown[T any] struct {
@@ -25,8 +25,8 @@ type CtxFnShutdown[T any] struct {
 	ShutdownFn func(context.Context)
 }
 
-func (thisP *CtxFnShutdown[T]) Get() T { return thisP.Value }
-
+func (thisP *CtxFnShutdown[T]) Val() T                       { return thisP.Value }
+func (thisP *CtxFnShutdown[T]) Ptr() *T                      { return &thisP.Value }
 func (thisP *CtxFnShutdown[T]) Shutdown(ctx context.Context) { thisP.ShutdownFn(ctx) }
 
 type CtxErrFnShutdown[T any] struct {
@@ -34,32 +34,32 @@ type CtxErrFnShutdown[T any] struct {
 	ShutdownFn func(context.Context) error
 }
 
-func (thisP *CtxErrFnShutdown[T]) Get() T { return thisP.Value }
-
+func (thisP *CtxErrFnShutdown[T]) Val() T                             { return thisP.Value }
+func (thisP *CtxErrFnShutdown[T]) Ptr() *T                            { return &thisP.Value }
 func (thisP *CtxErrFnShutdown[T]) Shutdown(ctx context.Context) error { return thisP.ShutdownFn(ctx) }
 
 type CloserShutdown[T interface{ Close() }] struct{ Value T }
 
-func (thisP *CloserShutdown[T]) Get() T { return thisP.Value }
-
-func (thisP *CloserShutdown[T]) Shutdown() { thisP.Value.Close() }
+func (thisV CloserShutdown[T]) Val() T    { return thisV.Value }
+func (thisV CloserShutdown[T]) Ptr() *T   { return &thisV.Value }
+func (thisV CloserShutdown[T]) Shutdown() { thisV.Value.Close() }
 
 type ErrCloserShutdown[T interface{ Close() error }] struct{ Value T }
 
-func (thisP *ErrCloserShutdown[T]) Get() T { return thisP.Value }
-
-func (thisP *ErrCloserShutdown[T]) Shutdown() error { return thisP.Value.Close() }
+func (thisV ErrCloserShutdown[T]) Val() T          { return thisV.Value }
+func (thisV ErrCloserShutdown[T]) Ptr() *T         { return &thisV.Value }
+func (thisV ErrCloserShutdown[T]) Shutdown() error { return thisV.Value.Close() }
 
 type CtxCloserShutdown[T interface{ Close(context.Context) }] struct{ Value T }
 
-func (thisP *CtxCloserShutdown[T]) Get() T { return thisP.Value }
-
-func (thisP *CtxCloserShutdown[T]) Shutdown(ctx context.Context) { thisP.Value.Close(ctx) }
+func (thisV CtxCloserShutdown[T]) Val() T                       { return thisV.Value }
+func (thisV CtxCloserShutdown[T]) Ptr() *T                      { return &thisV.Value }
+func (thisV CtxCloserShutdown[T]) Shutdown(ctx context.Context) { thisV.Value.Close(ctx) }
 
 type CtxErrCloserShutdown[T interface{ Close(context.Context) error }] struct{ Value T }
 
-func (thisP *CtxErrCloserShutdown[T]) Get() T { return thisP.Value }
-
-func (thisP *CtxErrCloserShutdown[T]) Shutdown(ctx context.Context) error {
-	return thisP.Value.Close(ctx)
+func (thisV CtxErrCloserShutdown[T]) Val() T  { return thisV.Value }
+func (thisV CtxErrCloserShutdown[T]) Ptr() *T { return &thisV.Value }
+func (thisV CtxErrCloserShutdown[T]) Shutdown(ctx context.Context) error {
+	return thisV.Value.Close(ctx)
 }

@@ -1,3 +1,6 @@
 package gox
 
-type Value[T any] interface{ Get() T }
+type Value[T any] interface {
+	Val() T
+	Ptr() *T
+}
