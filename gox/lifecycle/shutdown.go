@@ -2,8 +2,6 @@ package lifecycle
 
 import "context"
 
-type Value[T any] interface{ Get() T }
-
 type FnShutdown[T any] struct {
 	Value      T
 	ShutdownFn func()
