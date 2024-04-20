@@ -5,9 +5,9 @@ type Value[T any] interface {
 	Ptr() *T
 }
 
-func Nil2Zero[T any](t *T) (r T) {
+func Nil2Zero[T any](t *T) T {
 	if t == nil {
-		return
+		return *new(T)
 	}
 	return *t
 }
