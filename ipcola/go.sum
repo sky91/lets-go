@@ -1,0 +1,4 @@
+github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
+github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+github.com/sky91/lets-go/gox v0.0.0-20240420073239-1db0f9560d23 h1:dezl2YPZf7A1tcELXA4uMg4PKsSRPCM0wnFPW8H6jR8=
+github.com/sky91/lets-go/gox v0.0.0-20240420073239-1db0f9560d23/go.mod h1:OHjfjw87FnNQkulCg121zW8heEqlRLZ5IHQN92ofCDY=
