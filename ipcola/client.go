@@ -36,9 +36,9 @@ func (thisP *Client) OfflineIpRefundStaticTransferProxy(ctx context.Context, id 
 		thisP, ctx, http.MethodPost, apiUrlOfflineIpRefundStaticTransferProxy, &model.StaticTransferProxyOfflineIPRefundReq{ID: id})
 }
 
-func (thisP *Client) OnlineIpRefundStaticTransferProxy(ctx context.Context, req *model.StaticTransferProxyOnlineIPRefundReq) (*model.StaticTransferProxyOnlineIPRefundResp, error) {
+func (thisP *Client) OnlineIpRefundStaticTransferProxy(ctx context.Context, id int64) (*model.StaticTransferProxyOnlineIPRefundResp, error) {
 	return ipColaDoHttp[model.StaticTransferProxyOnlineIPRefundReq, model.StaticTransferProxyOnlineIPRefundResp](
-		thisP, ctx, http.MethodPost, apiUrlOnlineIpRefundStaticTransferProxy, req)
+		thisP, ctx, http.MethodPost, apiUrlOnlineIpRefundStaticTransferProxy, &model.StaticTransferProxyOnlineIPRefundReq{ID: id})
 }
 
 func ipColaDoHttp[Req, Resp any](client *Client, ctx context.Context, method, url string, req *Req) (*Resp, error) {
