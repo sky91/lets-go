@@ -41,6 +41,11 @@ func (thisP *Client) OnlineIpRefundStaticTransferProxy(ctx context.Context, id i
 		thisP, ctx, http.MethodPost, apiUrlOnlineIpRefundStaticTransferProxy, &model.StaticTransferProxyOnlineIPRefundReq{ID: id})
 }
 
+func (thisP *Client) UpdateTagStaticTransferProxy(ctx context.Context, req *model.StaticTransferProxyUpdateTagReq) (*model.StaticTransferProxyUpdateTagResp, error) {
+	return ipColaDoHttp[model.StaticTransferProxyUpdateTagReq, model.StaticTransferProxyUpdateTagResp](
+		thisP, ctx, http.MethodPost, apiUrlUpdateTagStaticTransferProxy, req)
+}
+
 func ipColaDoHttp[Req, Resp any](client *Client, ctx context.Context, method, url string, req *Req) (*Resp, error) {
 	reqBody, err := json.Marshal(req)
 	if err != nil {
@@ -78,6 +83,7 @@ const (
 	apiUrlReplaceStaticTransferProxy         = "https://api.ipcola.com/api/static_transfer_proxy/replace_ip"
 	apiUrlOfflineIpRefundStaticTransferProxy = "https://api.ipcola.com/api/static_transfer_proxy/refund"
 	apiUrlOnlineIpRefundStaticTransferProxy  = "https://api.ipcola.com/api/static_transfer_proxy/online_ip_refund"
+	apiUrlUpdateTagStaticTransferProxy       = "https://api.ipcola.com/api/static_transfer_proxy/update_tag"
 
 	apiUrlDeleteRecordStaticTransferProxy = "https://api.ipcola.com/api/static_transfer_proxy/delete_record"
 	// {"id":32871}
