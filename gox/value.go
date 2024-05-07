@@ -11,3 +11,5 @@ func Nil2Zero[T any](t *T) T {
 	}
 	return *t
 }
+
+func New[T any](t T) *T { return &t }

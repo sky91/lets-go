@@ -3,7 +3,7 @@ package stringx
 import "github.com/sky91/lets-go/gox"
 
 func NewString(s string) *string {
-	return &s
+	return gox.New(s)
 }
 
 func Nil2Empty(s *string) string {
