@@ -326,3 +326,7 @@ func (thisP *AttrValString) UnmarshalJSON(data []byte) error {
 	*thisP = AttrValString(v.Val)
 	return nil
 }
+
+type AttrKey string
+
+type Record map[AttrKey]AttrVal

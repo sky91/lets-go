@@ -19,9 +19,9 @@ type StreamEventRecord struct {
 
 type StreamRecord struct {
 	ApproximateCreationDateTime events.SecondsEpochTime `json:"ApproximateCreationDateTime,omitempty"`
-	Keys                        map[string]AttrVal      `json:"Keys,omitempty"`
-	NewImage                    map[string]AttrVal      `json:"NewImage,omitempty"`
-	OldImage                    map[string]AttrVal      `json:"OldImage,omitempty"`
+	Keys                        Record                  `json:"Keys,omitempty"`
+	NewImage                    Record                  `json:"NewImage,omitempty"`
+	OldImage                    Record                  `json:"OldImage,omitempty"`
 	SequenceNumber              string                  `json:"SequenceNumber"`
 	SizeBytes                   int64                   `json:"SizeBytes"`
 	StreamViewType              string                  `json:"StreamViewType"`
