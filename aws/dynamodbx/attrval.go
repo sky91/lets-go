@@ -25,7 +25,7 @@ func (thisV AttrVal) MarshalJSON() ([]byte, error) {
 }
 
 func (thisP *AttrVal) UnmarshalJSON(data []byte) error {
-	var val map[string]struct{}
+	var val map[string]json.RawMessage
 	if err := json.Unmarshal(data, &val); err != nil {
 		return err
 	}
