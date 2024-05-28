@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/sky91/lets-go/gox"
+	"strings"
 )
 
 type IsAttrVal interface {
@@ -387,4 +388,54 @@ func (thisP *AttrValString) UnmarshalJSON(data []byte) error {
 
 type AttrKey string
 
+const (
+	AttrKeyPk AttrKey = "PK"
+	AttrKeySk AttrKey = "SK"
+)
+
 type Record map[AttrKey]AttrVal
+
+type StrAttr struct {
+	Key AttrKey
+	Val AttrValString
+}
+
+type StrSeqRecord []StrAttr
+
+func ParseSequenceRecord(value string) (StrSeqRecord, error) {
+	if !strings.HasPrefix(value, "/") {
+		return nil, fmt.Errorf("invalid Attr: [%s]", value)
+	}
+	split := strings.Split(value[1:], "/")
+	values := make(StrSeqRecord, len(split))
+	for i, s := range split {
+		kvSplit := strings.SplitN(s, "+", 2)
+		if len(kvSplit) != 2 {
+			return nil, fmt.Errorf("invalid Attr: [%s]", value)
+		}
+		values[i].Key = AttrKey(kvSplit[0])
+		values[i].Val = AttrValString(kvSplit[1])
+	}
+	return values, nil
+}
+
+func (thisV StrSeqRecord) Find(key AttrKey) (string, bool) {
+	for _, attr := range thisV {
+		if attr.Key == key {
+			return string(attr.Val), true
+		}
+	}
+	return "", false
+}
+
+func (thisV StrSeqRecord) String() string {
+	sb := strings.Builder{}
+	sb.Grow(64)
+	for _, attr := range thisV {
+		_ = sb.WriteByte('/')
+		_, _ = sb.WriteString(string(attr.Key))
+		_ = sb.WriteByte('+')
+		_, _ = sb.WriteString(string(attr.Val))
+	}
+	return sb.String()
+}
