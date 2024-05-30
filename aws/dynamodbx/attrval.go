@@ -402,7 +402,7 @@ type StrAttr struct {
 
 type StrSeqRecord []StrAttr
 
-func ParseSequenceRecord(value string) (StrSeqRecord, error) {
+func ParseStrSeqRecord(value string) (StrSeqRecord, error) {
 	if !strings.HasPrefix(value, "/") {
 		return nil, fmt.Errorf("invalid Attr: [%s]", value)
 	}
