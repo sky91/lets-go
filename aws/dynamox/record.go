@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"strconv"
 	"strings"
 )
 
@@ -122,6 +123,16 @@ func (thisV Record) GetAsString(key AttrKey) (val string, exists, typeOk bool) {
 		val, typeOk = v.Value, true
 	case *types.AttributeValueMemberN:
 		val, typeOk = v.Value, true
+	}
+	return
+}
+
+func (thisV Record) GetAsInt64(key AttrKey) (val int64, exists, typeOk bool) {
+	v, exists, typeOk := thisV.GetAsN(key)
+	if exists && typeOk {
+		var err error
+		val, err = strconv.ParseInt(v.Value, 10, 64)
+		typeOk = err == nil
 	}
 	return
 }
