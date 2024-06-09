@@ -137,6 +137,14 @@ func (thisV Record) GetAsInt64(key AttrKey) (val int64, exists, typeOk bool) {
 	return
 }
 
+func (thisV Record) GetAsRecord(key AttrKey) (record Record, exists, typeOk bool) {
+	v, exists, typeOk := thisV.GetAsM(key)
+	if exists && typeOk {
+		record = v.Value
+	}
+	return
+}
+
 func (thisV Record) SetAttributeValue(key AttrKey, val types.AttributeValue) {
 	thisV[string(key)] = val
 }
