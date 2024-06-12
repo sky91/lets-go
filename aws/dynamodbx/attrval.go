@@ -5,26 +5,31 @@ import (
 	"errors"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/sky91/lets-go/aws/dynamox"
 	"github.com/sky91/lets-go/gox"
-	"strings"
 )
 
+// deprecated
 type IsAttrVal interface {
 	isAttrVal()
 }
 
+// deprecated
 type AttrVal struct {
 	Val IsAttrVal
 }
 
+// deprecated
 func (thisV AttrVal) ToAttributeValue() types.AttributeValue {
 	return thisV.Val.(interface{ ToAttributeValue() types.AttributeValue }).ToAttributeValue()
 }
 
+// deprecated
 func (thisV AttrVal) MarshalJSON() ([]byte, error) {
 	return json.Marshal(thisV.Val)
 }
 
+// deprecated
 func (thisP *AttrVal) UnmarshalJSON(data []byte) error {
 	var val map[string]json.RawMessage
 	if err := json.Unmarshal(data, &val); err != nil {
@@ -103,21 +108,33 @@ func (thisP *AttrVal) UnmarshalJSON(data []byte) error {
 	return fmt.Errorf("invalid AttrVal: [%s]", data)
 }
 
+// deprecated
 type AttrValBinaryStruct struct {
 	Val []byte `json:"B"`
 }
+
+// deprecated
 type AttrValBinary []byte
 
+// deprecated
 func (thisV AttrValBinary) isAttrVal() {}
+
+// deprecated
 func (thisV AttrValBinary) ToAttributeValue() types.AttributeValue {
 	return gox.New(thisV.ToAttributeValueMemberB())
 }
+
+// deprecated
 func (thisV AttrValBinary) ToAttributeValueMemberB() types.AttributeValueMemberB {
 	return types.AttributeValueMemberB{Value: thisV}
 }
+
+// deprecated
 func (thisV AttrValBinary) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AttrValBinaryStruct{Val: thisV})
 }
+
+// deprecated
 func (thisP *AttrValBinary) UnmarshalJSON(data []byte) error {
 	var v AttrValBinaryStruct
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -127,21 +144,33 @@ func (thisP *AttrValBinary) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// deprecated
 type AttrValBoolStruct struct {
 	Val bool `json:"BOOL"`
 }
+
+// deprecated
 type AttrValBool bool
 
+// deprecated
 func (thisV AttrValBool) isAttrVal() {}
+
+// deprecated
 func (thisV AttrValBool) ToAttributeValue() types.AttributeValue {
 	return gox.New(thisV.ToAttributeValueMemberBOOL())
 }
+
+// deprecated
 func (thisV AttrValBool) ToAttributeValueMemberBOOL() types.AttributeValueMemberBOOL {
 	return types.AttributeValueMemberBOOL{Value: bool(thisV)}
 }
+
+// deprecated
 func (thisV AttrValBool) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AttrValBoolStruct{Val: bool(thisV)})
 }
+
+// deprecated
 func (thisP *AttrValBool) UnmarshalJSON(data []byte) error {
 	var v AttrValBoolStruct
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -151,15 +180,23 @@ func (thisP *AttrValBool) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// deprecated
 type AttrValBinarySetStruct struct {
 	Val [][]byte `json:"BS"`
 }
+
+// deprecated
 type AttrValBinarySet map[string]struct{}
 
+// deprecated
 func (thisV AttrValBinarySet) isAttrVal() {}
+
+// deprecated
 func (thisV AttrValBinarySet) ToAttributeValue() types.AttributeValue {
 	return gox.New(thisV.ToAttributeValueMemberBS())
 }
+
+// deprecated
 func (thisV AttrValBinarySet) ToAttributeValueMemberBS() types.AttributeValueMemberBS {
 	val := make([][]byte, 0, len(thisV))
 	for k := range thisV {
@@ -167,6 +204,8 @@ func (thisV AttrValBinarySet) ToAttributeValueMemberBS() types.AttributeValueMem
 	}
 	return types.AttributeValueMemberBS{Value: val}
 }
+
+// deprecated
 func (thisV AttrValBinarySet) MarshalJSON() ([]byte, error) {
 	val := make([][]byte, 0, len(thisV))
 	for k := range thisV {
@@ -174,6 +213,8 @@ func (thisV AttrValBinarySet) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(AttrValBinarySetStruct{Val: val})
 }
+
+// deprecated
 func (thisP *AttrValBinarySet) UnmarshalJSON(data []byte) error {
 	var v AttrValBinarySetStruct
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -186,15 +227,23 @@ func (thisP *AttrValBinarySet) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// deprecated
 type AttrValListStruct struct {
 	Val []AttrVal `json:"L"`
 }
+
+// deprecated
 type AttrValList []AttrVal
 
+// deprecated
 func (thisV AttrValList) isAttrVal() {}
+
+// deprecated
 func (thisV AttrValList) ToAttributeValue() types.AttributeValue {
 	return gox.New(thisV.ToAttributeValueMemberL())
 }
+
+// deprecated
 func (thisV AttrValList) ToAttributeValueMemberL() types.AttributeValueMemberL {
 	val := make([]types.AttributeValue, 0, len(thisV))
 	for _, v := range thisV {
@@ -202,9 +251,13 @@ func (thisV AttrValList) ToAttributeValueMemberL() types.AttributeValueMemberL {
 	}
 	return types.AttributeValueMemberL{Value: val}
 }
+
+// deprecated
 func (thisV AttrValList) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AttrValListStruct{Val: thisV})
 }
+
+// deprecated
 func (thisP *AttrValList) UnmarshalJSON(data []byte) error {
 	var v AttrValListStruct
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -214,15 +267,23 @@ func (thisP *AttrValList) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// deprecated
 type AttrValMapStruct struct {
 	Val map[string]AttrVal `json:"M"`
 }
+
+// deprecated
 type AttrValMap map[string]AttrVal
 
+// deprecated
 func (thisV AttrValMap) isAttrVal() {}
+
+// deprecated
 func (thisV AttrValMap) ToAttributeValue() types.AttributeValue {
 	return gox.New(thisV.ToAttributeValueMemberM())
 }
+
+// deprecated
 func (thisV AttrValMap) ToAttributeValueMemberM() types.AttributeValueMemberM {
 	val := make(map[string]types.AttributeValue, len(thisV))
 	for k, v := range thisV {
@@ -230,9 +291,13 @@ func (thisV AttrValMap) ToAttributeValueMemberM() types.AttributeValueMemberM {
 	}
 	return types.AttributeValueMemberM{Value: val}
 }
+
+// deprecated
 func (thisV AttrValMap) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AttrValMapStruct{Val: thisV})
 }
+
+// deprecated
 func (thisP *AttrValMap) UnmarshalJSON(data []byte) error {
 	var v AttrValMapStruct
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -242,21 +307,33 @@ func (thisP *AttrValMap) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// deprecated
 type AttrValNullStruct struct {
 	Val bool `json:"NULL"`
 }
+
+// deprecated
 type AttrValNull struct{}
 
+// deprecated
 func (thisV AttrValNull) isAttrVal() {}
+
+// deprecated
 func (thisV AttrValNull) ToAttributeValue() types.AttributeValue {
 	return gox.New(thisV.ToAttributeValueMemberNULL())
 }
+
+// deprecated
 func (thisV AttrValNull) ToAttributeValueMemberNULL() types.AttributeValueMemberNULL {
 	return types.AttributeValueMemberNULL{Value: true}
 }
+
+// deprecated
 func (thisV AttrValNull) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AttrValNullStruct{Val: true})
 }
+
+// deprecated
 func (thisP *AttrValNull) UnmarshalJSON(data []byte) error {
 	var v AttrValNullStruct
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -268,21 +345,33 @@ func (thisP *AttrValNull) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// deprecated
 type AttrValNumberStruct struct {
 	Val string `json:"N"`
 }
+
+// deprecated
 type AttrValNumber string
 
+// deprecated
 func (thisV AttrValNumber) isAttrVal() {}
+
+// deprecated
 func (thisV AttrValNumber) ToAttributeValue() types.AttributeValue {
 	return gox.New(thisV.ToAttributeValueMemberN())
 }
+
+// deprecated
 func (thisV AttrValNumber) ToAttributeValueMemberN() types.AttributeValueMemberN {
 	return types.AttributeValueMemberN{Value: string(thisV)}
 }
+
+// deprecated
 func (thisV AttrValNumber) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AttrValNumberStruct{Val: string(thisV)})
 }
+
+// deprecated
 func (thisP *AttrValNumber) UnmarshalJSON(data []byte) error {
 	var v AttrValNumberStruct
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -292,15 +381,23 @@ func (thisP *AttrValNumber) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// deprecated
 type AttrValNumberSetStruct struct {
 	Val []string `json:"NS"`
 }
+
+// deprecated
 type AttrValNumberSet map[string]struct{}
 
+// deprecated
 func (thisV AttrValNumberSet) isAttrVal() {}
+
+// deprecated
 func (thisV AttrValNumberSet) ToAttributeValue() types.AttributeValue {
 	return gox.New(thisV.ToAttributeValueMemberNS())
 }
+
+// deprecated
 func (thisV AttrValNumberSet) ToAttributeValueMemberNS() types.AttributeValueMemberNS {
 	val := make([]string, 0, len(thisV))
 	for k := range thisV {
@@ -308,6 +405,8 @@ func (thisV AttrValNumberSet) ToAttributeValueMemberNS() types.AttributeValueMem
 	}
 	return types.AttributeValueMemberNS{Value: val}
 }
+
+// deprecated
 func (thisV AttrValNumberSet) MarshalJSON() ([]byte, error) {
 	val := make([]string, 0, len(thisV))
 	for k := range thisV {
@@ -315,6 +414,8 @@ func (thisV AttrValNumberSet) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(AttrValNumberSetStruct{Val: val})
 }
+
+// deprecated
 func (thisP *AttrValNumberSet) UnmarshalJSON(data []byte) error {
 	var v AttrValNumberSetStruct
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -327,15 +428,23 @@ func (thisP *AttrValNumberSet) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// deprecated
 type AttrValStringSetStruct struct {
 	Val []string `json:"SS"`
 }
+
+// deprecated
 type AttrValStringSet map[string]struct{}
 
+// deprecated
 func (thisV AttrValStringSet) isAttrVal() {}
+
+// deprecated
 func (thisV AttrValStringSet) ToAttributeValue() types.AttributeValue {
 	return gox.New(thisV.ToAttributeValueMemberSS())
 }
+
+// deprecated
 func (thisV AttrValStringSet) ToAttributeValueMemberSS() types.AttributeValueMemberSS {
 	val := make([]string, 0, len(thisV))
 	for k := range thisV {
@@ -343,6 +452,8 @@ func (thisV AttrValStringSet) ToAttributeValueMemberSS() types.AttributeValueMem
 	}
 	return types.AttributeValueMemberSS{Value: val}
 }
+
+// deprecated
 func (thisV AttrValStringSet) MarshalJSON() ([]byte, error) {
 	val := make([]string, 0, len(thisV))
 	for k := range thisV {
@@ -350,6 +461,8 @@ func (thisV AttrValStringSet) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(AttrValStringSetStruct{Val: val})
 }
+
+// deprecated
 func (thisP *AttrValStringSet) UnmarshalJSON(data []byte) error {
 	var v AttrValStringSetStruct
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -362,21 +475,33 @@ func (thisP *AttrValStringSet) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// deprecated
 type AttrValStringStruct struct {
 	Val string `json:"S"`
 }
+
+// deprecated
 type AttrValString string
 
+// deprecated
 func (thisV AttrValString) isAttrVal() {}
+
+// deprecated
 func (thisV AttrValString) ToAttributeValue() types.AttributeValue {
 	return gox.New(thisV.ToAttributeValueMemberS())
 }
+
+// deprecated
 func (thisV AttrValString) ToAttributeValueMemberS() types.AttributeValueMemberS {
 	return types.AttributeValueMemberS{Value: string(thisV)}
 }
+
+// deprecated
 func (thisV AttrValString) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AttrValStringStruct{Val: string(thisV)})
 }
+
+// deprecated
 func (thisP *AttrValString) UnmarshalJSON(data []byte) error {
 	var v AttrValStringStruct
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -386,56 +511,23 @@ func (thisP *AttrValString) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type AttrKey string
+type AttrKey = dynamox.AttrKey
 
 const (
-	AttrKeyPk AttrKey = "PK"
-	AttrKeySk AttrKey = "SK"
+	AttrKeyPk = dynamox.AttrKeyPk
+	AttrKeySk = dynamox.AttrKeySk
 )
 
-type Record map[AttrKey]AttrVal
+// deprecated
+type Record = dynamox.Record
 
-type StrAttr struct {
-	Key AttrKey
-	Val AttrValString
-}
+// deprecated
+type StrAttr = dynamox.StringAttr
 
-type StrSeqRecord []StrAttr
+// deprecated
+type StrSeqRecord = dynamox.StringPositionalRecord
 
+// deprecated
 func ParseStrSeqRecord(value string) (StrSeqRecord, error) {
-	if !strings.HasPrefix(value, "/") {
-		return nil, fmt.Errorf("invalid Attr: [%s]", value)
-	}
-	split := strings.Split(value[1:], "/")
-	values := make(StrSeqRecord, len(split))
-	for i, s := range split {
-		kvSplit := strings.SplitN(s, "+", 2)
-		if len(kvSplit) != 2 {
-			return nil, fmt.Errorf("invalid Attr: [%s]", value)
-		}
-		values[i].Key = AttrKey(kvSplit[0])
-		values[i].Val = AttrValString(kvSplit[1])
-	}
-	return values, nil
-}
-
-func (thisV StrSeqRecord) Find(key AttrKey) (string, bool) {
-	for _, attr := range thisV {
-		if attr.Key == key {
-			return string(attr.Val), true
-		}
-	}
-	return "", false
-}
-
-func (thisV StrSeqRecord) String() string {
-	sb := strings.Builder{}
-	sb.Grow(64)
-	for _, attr := range thisV {
-		_ = sb.WriteByte('/')
-		_, _ = sb.WriteString(string(attr.Key))
-		_ = sb.WriteByte('+')
-		_, _ = sb.WriteString(string(attr.Val))
-	}
-	return sb.String()
+	return dynamox.ParseStringPositionalRecord(value)
 }
