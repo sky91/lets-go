@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/sky91/lets-go/gox/collection"
 	"strconv"
 	"strings"
 )
@@ -141,6 +142,22 @@ func (thisV Record) GetAsRecord(key AttrKey) (record Record, exists, typeOk bool
 	v, exists, typeOk := thisV.GetAsM(key)
 	if exists && typeOk {
 		record = v.Value
+	}
+	return
+}
+
+func (thisV Record) GetAsStringSlice(key AttrKey) (val []string, exists, typeOk bool) {
+	v, exists, typeOk := thisV.GetAsSS(key)
+	if exists && typeOk {
+		val = v.Value
+	}
+	return
+}
+
+func (thisV Record) GetAsStringSet(key AttrKey) (val map[string]struct{}, exists, typeOk bool) {
+	v, exists, typeOk := thisV.GetAsStringSlice(key)
+	if exists && typeOk {
+		val = collection.Slice2Set(v)
 	}
 	return
 }
