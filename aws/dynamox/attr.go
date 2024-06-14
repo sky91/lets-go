@@ -188,7 +188,8 @@ func (thisV AttributeValueWrapper) AsSS() (*types.AttributeValueMemberSS, bool) 
 type AttrKey string
 
 const (
-	AttrKeyPk    AttrKey = "PK"
-	AttrKeySk    AttrKey = "SK"
-	AttrKeyClass AttrKey = "C"
+	AttrKeyPk            AttrKey = "PK"
+	AttrKeySk            AttrKey = "SK"
+	AttrKeyClass         AttrKey = "C"
+	AttrKeyExpireUnixSec AttrKey = "ExpireUnixSec"
 )
