@@ -162,6 +162,16 @@ func (thisV Record) GetAsStringSet(key AttrKey) (val map[string]struct{}, exists
 	return
 }
 
+func (thisV Record) SubRecord(keys ...AttrKey) Record {
+	sub := make(Record, len(keys))
+	for _, key := range keys {
+		if v, exists := thisV[string(key)]; exists {
+			sub[string(key)] = v
+		}
+	}
+	return sub
+}
+
 func (thisV Record) SetAttributeValue(key AttrKey, val types.AttributeValue) {
 	thisV[string(key)] = val
 }
