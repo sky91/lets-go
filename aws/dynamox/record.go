@@ -162,6 +162,14 @@ func (thisV Record) GetAsStringSet(key AttrKey) (val map[string]struct{}, exists
 	return
 }
 
+func (thisV Record) GetAsSlice(key AttrKey) (val []types.AttributeValue, exists, typeOk bool) {
+	v, exists, typeOk := thisV.GetAsL(key)
+	if exists && typeOk {
+		val = v.Value
+	}
+	return
+}
+
 func (thisV Record) SubRecord(keys ...AttrKey) Record {
 	sub := make(Record, len(keys))
 	for _, key := range keys {
