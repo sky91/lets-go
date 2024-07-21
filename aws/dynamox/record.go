@@ -228,8 +228,12 @@ func (thisV Record) SetInt(key AttrKey, val int) {
 func (thisV Record) SetInt64(key AttrKey, val int64) {
 	thisV.SetNumber(key, strconv.FormatInt(val, 10))
 }
-func (thisV Record) setUint64(key AttrKey, val uint64) {
+func (thisV Record) SetUint64(key AttrKey, val uint64) {
 	thisV.SetNumber(key, strconv.FormatUint(val, 10))
+}
+
+func (thisV Record) SetSlice(key AttrKey, val []types.AttributeValue) {
+	thisV.SetAttributeValue(key, &types.AttributeValueMemberL{Value: val})
 }
 
 type StringAttr struct {
