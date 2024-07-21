@@ -211,6 +211,10 @@ func (thisV Record) SetAttributeValue(key AttrKey, val types.AttributeValue) {
 	thisV[string(key)] = val
 }
 
+func (thisV Record) SetBool(key AttrKey, val bool) {
+	thisV.SetAttributeValue(key, &types.AttributeValueMemberBOOL{Value: val})
+}
+
 func (thisV Record) SetString(key AttrKey, val string) {
 	thisV.SetAttributeValue(key, &types.AttributeValueMemberS{Value: val})
 }
@@ -218,11 +222,12 @@ func (thisV Record) SetString(key AttrKey, val string) {
 func (thisV Record) SetNumber(key AttrKey, val string) {
 	thisV.SetAttributeValue(key, &types.AttributeValueMemberN{Value: val})
 }
-
+func (thisV Record) SetInt(key AttrKey, val int) {
+	thisV.SetNumber(key, strconv.Itoa(val))
+}
 func (thisV Record) SetInt64(key AttrKey, val int64) {
 	thisV.SetNumber(key, strconv.FormatInt(val, 10))
 }
-
 func (thisV Record) setUint64(key AttrKey, val uint64) {
 	thisV.SetNumber(key, strconv.FormatUint(val, 10))
 }
