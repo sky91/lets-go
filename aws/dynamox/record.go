@@ -114,6 +114,14 @@ func (thisV Record) GetAsSS(key AttrKey) (val *types.AttributeValueMemberSS, exi
 	return
 }
 
+func (thisV Record) GetAsBool(key AttrKey) (val bool, exists, typeOk bool) {
+	v, exists, typeOk := thisV.GetAsBOOL(key)
+	if exists && typeOk {
+		val = v.Value
+	}
+	return
+}
+
 func (thisV Record) GetAsString(key AttrKey) (val string, exists, typeOk bool) {
 	rawVal, exists := thisV[string(key)]
 	if !exists {
@@ -128,12 +136,31 @@ func (thisV Record) GetAsString(key AttrKey) (val string, exists, typeOk bool) {
 	return
 }
 
-func (thisV Record) GetAsInt64(key AttrKey) (val int64, exists, typeOk bool) {
+func (thisV Record) GetAsInt(key AttrKey) (val int, exists, typeOk bool) {
 	v, exists, typeOk := thisV.GetAsN(key)
 	if exists && typeOk {
 		var err error
-		val, err = strconv.ParseInt(v.Value, 10, 64)
+		val, err = strconv.Atoi(v.Value)
 		typeOk = err == nil
+	}
+	return
+}
+func (thisV Record) GetAsIntN(key AttrKey, bitSize int) (val int64, exists, typeOk bool) {
+	v, exists, typeOk := thisV.GetAsN(key)
+	if exists && typeOk {
+		var err error
+		val, err = strconv.ParseInt(v.Value, 10, bitSize)
+		typeOk = err == nil
+	}
+	return
+}
+func (thisV Record) GetAsInt64(key AttrKey) (val int64, exists, typeOk bool) {
+	return thisV.GetAsIntN(key, 64)
+}
+func (thisV Record) GetAsInt32(key AttrKey) (val int32, exists, typeOk bool) {
+	v, exists, typeOk := thisV.GetAsIntN(key, 32)
+	if exists && typeOk {
+		val = int32(v)
 	}
 	return
 }
