@@ -17,13 +17,13 @@ type TokenAlg struct {
 
 func (thisP *TokenAlg) Init(rootKey []byte) {
 	tokenAesKeyShake := sha3.NewCShake256(nil, []byte("token_aes_key"))
-	lo.Must0(tokenAesKeyShake.Write(rootKey))
+	lo.Must(tokenAesKeyShake.Write(rootKey))
 	aesKey := make([]byte, 16)
-	lo.Must0(io.ReadFull(tokenAesKeyShake, aesKey))
+	lo.Must(io.ReadFull(tokenAesKeyShake, aesKey))
 	thisP.tokenCipherBlock = lo.Must(aes.NewCipher(aesKey))
 
 	thisP.macShake = sha3.NewCShake256(nil, []byte("mac_shake"))
-	lo.Must0(thisP.macShake.Write(rootKey))
+	lo.Must(thisP.macShake.Write(rootKey))
 }
 
 func (thisP *TokenAlg) EncodeToken(tokenData []byte) []byte {
@@ -50,7 +50,7 @@ func (thisP *TokenAlg) encodeTokenV0(tokenData []byte) []byte {
 	ivEnc := macIvEnc[len(mac):]
 
 	iv := ivEnc[:thisP.tokenCipherBlock.BlockSize()]
-	lo.Must0(rand.Read(iv))
+	lo.Must(rand.Read(iv))
 
 	enc := ivEnc[len(iv):]
 	copy(enc, tokenData)
@@ -60,8 +60,8 @@ func (thisP *TokenAlg) encodeTokenV0(tokenData []byte) []byte {
 	cipher.NewCBCEncrypter(thisP.tokenCipherBlock, iv).CryptBlocks(enc, enc)
 
 	shake := thisP.macShake.Clone()
-	lo.Must0(shake.Write(ivEnc))
-	lo.Must0(io.ReadFull(shake, mac))
+	lo.Must(shake.Write(ivEnc))
+	lo.Must(io.ReadFull(shake, mac))
 	return encodedToken
 }
 
@@ -78,9 +78,9 @@ func (thisP *TokenAlg) decodeTokenV0(encodedToken []byte) ([]byte, bool) {
 	ivEnc := macIvEnc[len(mac):]
 
 	shake := thisP.macShake.Clone()
-	lo.Must0(shake.Write(ivEnc))
+	lo.Must(shake.Write(ivEnc))
 	calcMac := [8]byte{}
-	lo.Must0(io.ReadFull(shake, calcMac[:]))
+	lo.Must(io.ReadFull(shake, calcMac[:]))
 	if !bytes.Equal(mac, calcMac[:]) {
 		return nil, false
 	}
