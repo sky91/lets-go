@@ -1,6 +1,8 @@
 package dox
 
-import "github.com/samber/do/v2"
+import (
+	"github.com/samber/do/v2"
+)
 
 type Transformer[In, Out any] func(in In) (Out, error)
 type Producer[Out any] func() (Out, error)
@@ -59,4 +61,27 @@ func LazyStructNamed[In, Out any](name string, transform Transformer[*In, Out]) 
 			return transform(in)
 		})
 	}
+}
+
+func LazyUnwrap[In wrapper[Out], Out any]() func(do.Injector) {
+	return func(injector do.Injector) {
+		do.Provide(injector, func(injector do.Injector) (out Out, err error) {
+			w, err := do.Invoke[In](injector)
+			if err != nil {
+				return out, err
+			}
+			return w.Val(), nil
+		})
+	}
+}
+
+func LazyWithUnwrap[Out any, W wrapper[Out]](f func(do.Injector)) func(do.Injector) {
+	return func(injector do.Injector) {
+		f(injector)
+		LazyUnwrap[W, Out]()(injector)
+	}
+}
+
+type wrapper[T any] interface {
+	Val() T
 }
