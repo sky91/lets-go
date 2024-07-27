@@ -2,50 +2,61 @@ package dox
 
 import "github.com/samber/do/v2"
 
-func LazyTransfer[Dep, T any](transfer func(dep Dep) (T, error)) func(do.Injector) {
+type Transformer[In, Out any] func(in In) (Out, error)
+type Producer[Out any] func() (Out, error)
+
+func LazyProduce[Out any](produce Producer[Out]) func(do.Injector) {
 	return func(injector do.Injector) {
-		do.Provide(injector, func(injector do.Injector) (t T, err error) {
-			dep, err := do.Invoke[Dep](injector)
-			if err != nil {
-				return t, err
-			}
-			return transfer(dep)
+		do.Provide(injector, func(do.Injector) (out Out, err error) {
+			return produce()
 		})
 	}
 }
 
-func LazyTransferNamed[Dep, T any](name string, transfer func(dep Dep) (T, error)) func(do.Injector) {
+func Lazy[In, Out any](transform Transformer[In, Out]) func(do.Injector) {
 	return func(injector do.Injector) {
-		do.ProvideNamed(injector, name, func(injector do.Injector) (t T, err error) {
-			dep, err := do.Invoke[Dep](injector)
+		do.Provide(injector, func(injector do.Injector) (out Out, err error) {
+			in, err := do.Invoke[In](injector)
 			if err != nil {
-				return t, err
+				return out, err
 			}
-			return transfer(dep)
+			return transform(in)
 		})
 	}
 }
 
-func LazyTransferStruct[Dep, T any](transfer func(dep *Dep) (T, error)) func(do.Injector) {
+func LazyNamed[In, Out any](name string, transform Transformer[In, Out]) func(do.Injector) {
 	return func(injector do.Injector) {
-		do.Provide(injector, func(injector do.Injector) (t T, err error) {
-			dep, err := do.InvokeStruct[Dep](injector)
+		do.ProvideNamed(injector, name, func(injector do.Injector) (out Out, err error) {
+			in, err := do.Invoke[In](injector)
 			if err != nil {
-				return t, err
+				return out, err
 			}
-			return transfer(dep)
+			return transform(in)
 		})
 	}
 }
 
-func LazyTransferStructNamed[Dep, T any](name string, transfer func(dep *Dep) (T, error)) func(do.Injector) {
+func LazyStruct[In, Out any](transform Transformer[*In, Out]) func(do.Injector) {
 	return func(injector do.Injector) {
-		do.ProvideNamed(injector, name, func(injector do.Injector) (t T, err error) {
-			dep, err := do.InvokeStruct[Dep](injector)
+		do.Provide(injector, func(injector do.Injector) (out Out, err error) {
+			in, err := do.InvokeStruct[In](injector)
 			if err != nil {
-				return t, err
+				return out, err
 			}
-			return transfer(dep)
+			return transform(in)
+		})
+	}
+}
+
+func LazyStructNamed[In, Out any](name string, transform Transformer[*In, Out]) func(do.Injector) {
+	return func(injector do.Injector) {
+		do.ProvideNamed(injector, name, func(injector do.Injector) (out Out, err error) {
+			in, err := do.InvokeStruct[In](injector)
+			if err != nil {
+				return out, err
+			}
+			return transform(in)
 		})
 	}
 }
