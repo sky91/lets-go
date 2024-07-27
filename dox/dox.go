@@ -75,18 +75,12 @@ func LazyUnwrap[In wrapper[Out], Out any]() func(do.Injector) {
 	}
 }
 
-func LazyWithUnwrap[In, Out any, W wrapper[Out]](transform Transformer[In, Out]) func(do.Injector) {
-	return func(injector do.Injector) {
-		Lazy(transform)(injector)
-		LazyUnwrap[W, Out]()(injector)
-	}
+func LazyWithUnwrap[In, Out any, W wrapper[Out]](transform Transformer[In, W]) func(do.Injector) {
+	return do.Package(Lazy(transform), LazyUnwrap[W, Out]())
 }
 
-func LazyStructWithUnwrap[In, Out any, W wrapper[Out]](transform Transformer[*In, Out]) func(do.Injector) {
-	return func(injector do.Injector) {
-		LazyStruct(transform)(injector)
-		LazyUnwrap[W, Out]()(injector)
-	}
+func LazyStructWithUnwrap[In, Out any, W wrapper[Out]](transform Transformer[*In, W]) func(do.Injector) {
+	return do.Package(LazyStruct(transform), LazyUnwrap[W, Out]())
 }
 
 type wrapper[T any] interface {
