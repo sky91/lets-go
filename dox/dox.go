@@ -51,6 +51,10 @@ func LazyStruct[In, Out any](transform Transformer[*In, Out]) func(do.Injector) 
 	}
 }
 
+func LazyStructSelf[T any]() func(do.Injector) {
+	return LazyStruct[T, *T](TransformSelf[*T])
+}
+
 func LazyStructNamed[In, Out any](name string, transform Transformer[*In, Out]) func(do.Injector) {
 	return func(injector do.Injector) {
 		do.ProvideNamed(injector, name, func(injector do.Injector) (out Out, err error) {
@@ -85,4 +89,8 @@ func LazyStructWithUnwrap[In, Out any, W wrapper[Out]](transform Transformer[*In
 
 type wrapper[T any] interface {
 	Val() T
+}
+
+func TransformSelf[T any](t T) (T, error) {
+	return t, nil
 }
