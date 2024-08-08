@@ -105,6 +105,6 @@ func (thisP *Input1ErrClosers[T]) CloseAppendOnError(t T, err *error) {
 	}
 }
 
-type CtxClosers Input1Closers[context.Context]
+type CtxClosers = Input1Closers[context.Context]
 
-type CtxErrClosers Input1ErrClosers[context.Context]
+type CtxErrClosers = Input1ErrClosers[context.Context]
