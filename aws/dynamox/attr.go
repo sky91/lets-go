@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/pkg/errors"
+	"strconv"
 )
 
 type AttributeValueWrapper struct {
@@ -186,6 +187,10 @@ func (thisV AttributeValueWrapper) AsSS() (*types.AttributeValueMemberSS, bool) 
 }
 
 type AttrKey string
+
+func (thisV AttrKey) WithIndex(i int) string {
+	return string(thisV) + "[" + strconv.Itoa(i) + "]"
+}
 
 const (
 	AttrKeyPk            AttrKey = "PK"
