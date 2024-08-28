@@ -164,6 +164,25 @@ func (thisV Record) GetAsInt32(key AttrKey) (val int32, exists, typeOk bool) {
 	}
 	return
 }
+func (thisV Record) GetAsUintN(key AttrKey, bitSize int) (val uint64, exists, typeOk bool) {
+	v, exists, typeOk := thisV.GetAsN(key)
+	if exists && typeOk {
+		var err error
+		val, err = strconv.ParseUint(v.Value, 10, bitSize)
+		typeOk = err == nil
+	}
+	return
+}
+func (thisV Record) GetAsUint64(key AttrKey) (val uint64, exists, typeOk bool) {
+	return thisV.GetAsUintN(key, 64)
+}
+func (thisV Record) GetAsUint32(key AttrKey) (val uint32, exists, typeOk bool) {
+	v, exists, typeOk := thisV.GetAsUintN(key, 32)
+	if exists && typeOk {
+		val = uint32(v)
+	}
+	return
+}
 
 func (thisV Record) GetAsRecord(key AttrKey) (record Record, exists, typeOk bool) {
 	v, exists, typeOk := thisV.GetAsM(key)
