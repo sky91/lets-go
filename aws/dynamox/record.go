@@ -132,6 +132,22 @@ func (thisV Record) GetAsString(key AttrKey) (val string, exists, typeOk bool) {
 		val, typeOk = v.Value, true
 	case *types.AttributeValueMemberN:
 		val, typeOk = v.Value, true
+	case *types.AttributeValueMemberB:
+		val, typeOk = string(v.Value), true
+	}
+	return
+}
+
+func (thisV Record) GetAsBytes(key AttrKey) (val []byte, exists, typeOk bool) {
+	rawVal, exists := thisV[string(key)]
+	if !exists {
+		return
+	}
+	switch v := rawVal.(type) {
+	case *types.AttributeValueMemberS:
+		val, typeOk = []byte(v.Value), true
+	case *types.AttributeValueMemberB:
+		val, typeOk = v.Value, true
 	}
 	return
 }
