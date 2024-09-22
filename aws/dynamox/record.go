@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/sky91/lets-go/gox/collection"
+	"github.com/samber/lo"
 	"strconv"
 	"strings"
 )
@@ -209,9 +209,17 @@ func (thisV Record) GetAsRecord(key AttrKey) (record Record, exists, typeOk bool
 }
 
 func (thisV Record) GetAsStringSlice(key AttrKey) (val []string, exists, typeOk bool) {
-	v, exists, typeOk := thisV.GetAsSS(key)
-	if exists && typeOk {
-		val = v.Value
+	rawVal, exists := thisV[string(key)]
+	if !exists {
+		return
+	}
+	switch v := rawVal.(type) {
+	case *types.AttributeValueMemberSS:
+		val, typeOk = v.Value, true
+	case *types.AttributeValueMemberNS:
+		val, typeOk = v.Value, true
+	case *types.AttributeValueMemberBS:
+		val, typeOk = lo.Map(v.Value, func(item []byte, index int) string { return string(item) }), true
 	}
 	return
 }
@@ -219,7 +227,7 @@ func (thisV Record) GetAsStringSlice(key AttrKey) (val []string, exists, typeOk 
 func (thisV Record) GetAsStringSet(key AttrKey) (val map[string]struct{}, exists, typeOk bool) {
 	v, exists, typeOk := thisV.GetAsStringSlice(key)
 	if exists && typeOk {
-		val = collection.Slice2Set(v)
+		val = lo.SliceToMap(v, func(item string) (string, struct{}) { return item, struct{}{} })
 	}
 	return
 }
