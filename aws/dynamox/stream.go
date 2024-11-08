@@ -3,7 +3,7 @@ package dynamox
 import "github.com/aws/aws-lambda-go/events"
 
 type StreamEvent struct {
-	Records []StreamEventRecord `json:"Records"`
+	Records []*StreamEventRecord `json:"Records"`
 }
 
 type StreamEventRecord struct {
