@@ -55,6 +55,22 @@ func LazyStructSelf[T any]() func(do.Injector) {
 	return LazyStruct[T, *T](TransformSelf[*T])
 }
 
+func LazyStructSelfAndInit[T, InitParam any](init func(t *T, param *InitParam) error) func(do.Injector) {
+	return func(injector do.Injector) {
+		do.Provide(injector, func(injector do.Injector) (*T, error) {
+			t, err := do.InvokeStruct[T](injector)
+			if err != nil {
+				return nil, err
+			}
+			param, err := do.InvokeStruct[InitParam](injector)
+			if err != nil {
+				return nil, err
+			}
+			return t, init(t, param)
+		})
+	}
+}
+
 func LazyStructNamed[In, Out any](name string, transform Transformer[*In, Out]) func(do.Injector) {
 	return func(injector do.Injector) {
 		do.ProvideNamed(injector, name, func(injector do.Injector) (out Out, err error) {
