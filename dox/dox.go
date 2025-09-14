@@ -39,7 +39,7 @@ func LazyNamed[In, Out any](name string, transform Transformer[In, Out]) func(do
 	}
 }
 
-func LazyStruct[In, Out any](transform Transformer[*In, Out]) func(do.Injector) {
+func LazyStructTransform[In, Out any](transform Transformer[In, Out]) func(do.Injector) {
 	return func(injector do.Injector) {
 		do.Provide(injector, func(injector do.Injector) (out Out, err error) {
 			in, err := do.InvokeStruct[In](injector)
@@ -52,26 +52,26 @@ func LazyStruct[In, Out any](transform Transformer[*In, Out]) func(do.Injector) 
 }
 
 func LazyStructSelf[T any]() func(do.Injector) {
-	return LazyStruct[T, *T](TransformSelf[*T])
+	return LazyStructTransform(func(in T) (T, error) { return in, nil })
 }
 
-func LazyStructSelfAndInit[T, InitParam any](init func(t *T, param *InitParam) error) func(do.Injector) {
+func LazyStructSelfAndInit[T, InitParam any](init func(t T, param InitParam) error) func(do.Injector) {
 	return func(injector do.Injector) {
-		do.Provide(injector, func(injector do.Injector) (*T, error) {
+		do.Provide(injector, func(injector do.Injector) (T, error) {
 			t, err := do.InvokeStruct[T](injector)
 			if err != nil {
-				return nil, err
+				return t, err
 			}
 			param, err := do.InvokeStruct[InitParam](injector)
 			if err != nil {
-				return nil, err
+				return t, err
 			}
 			return t, init(t, param)
 		})
 	}
 }
 
-func LazyStructNamed[In, Out any](name string, transform Transformer[*In, Out]) func(do.Injector) {
+func LazyStructNamed[In, Out any](name string, transform Transformer[In, Out]) func(do.Injector) {
 	return func(injector do.Injector) {
 		do.ProvideNamed(injector, name, func(injector do.Injector) (out Out, err error) {
 			in, err := do.InvokeStruct[In](injector)
@@ -99,14 +99,10 @@ func LazyWithUnwrap[In, Out any, W wrapper[Out]](transform Transformer[In, W]) f
 	return do.Package(Lazy(transform), LazyUnwrap[W, Out]())
 }
 
-func LazyStructWithUnwrap[In, Out any, W wrapper[Out]](transform Transformer[*In, W]) func(do.Injector) {
-	return do.Package(LazyStruct(transform), LazyUnwrap[W, Out]())
+func LazyStructWithUnwrap[In, Out any, W wrapper[Out]](transform Transformer[In, W]) func(do.Injector) {
+	return do.Package(LazyStructTransform(transform), LazyUnwrap[W, Out]())
 }
 
 type wrapper[T any] interface {
 	Val() T
-}
-
-func TransformSelf[T any](t T) (T, error) {
-	return t, nil
 }
