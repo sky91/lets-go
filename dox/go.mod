@@ -1,6 +1,6 @@
 module github.com/sky91/lets-go/dox
 
-go 1.22
+go 1.24
 
 require github.com/samber/do/v2 v2.0.0-rc1
 
