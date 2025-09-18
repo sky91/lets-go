@@ -9,19 +9,16 @@ import (
 type Transformer[In, Out any] func(in In) (Out, error)
 type Producer[Out any] func() (Out, error)
 
-type componentKeyHelper struct{}
-type ComponentKey *componentKeyHelper
+type Ref[T any] struct{ V T }
 
-type Ref[K ~*componentKeyHelper, V any] struct{ Val V }
-
-func LazyWithRef[K ~*componentKeyHelper, V any](provider do.Provider[V]) func(do.Injector) {
+func LazyWithRef[R ~struct{ V T }, T any](provider do.Provider[T]) func(do.Injector) {
 	var buf [4]byte
 	_, _ = rand.Read(buf[:])
 	name := hex.EncodeToString(buf[:])
 	return do.Package(
 		do.LazyNamed(name, provider),
-		do.Lazy(func(injector do.Injector) (Ref[K, V], error) {
-			return Ref[K, V]{Val: do.MustInvokeNamed[V](injector, name)}, nil
+		do.Lazy(func(injector do.Injector) (R, error) {
+			return R{V: do.MustInvokeNamed[T](injector, name)}, nil
 		}),
 	)
 }
