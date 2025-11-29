@@ -7,9 +7,24 @@ type Value[T any] interface {
 
 func Nil2Zero[T any](t *T) T {
 	if t == nil {
-		return *new(T)
+		var defaultValue T
+		return defaultValue
 	}
 	return *t
 }
 
 func New[T any](t T) *T { return &t }
+
+func DerefOr[T any](t *T, defaultVal T) T {
+	if t == nil {
+		return defaultVal
+	}
+	return *t
+}
+
+func DerefOrCompute[T any](t *T, compute func() T) T {
+	if t == nil {
+		return compute()
+	}
+	return *t
+}
